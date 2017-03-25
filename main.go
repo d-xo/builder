@@ -4,6 +4,7 @@ import (
 	"crypto/sha1"
 	"encoding/hex"
 	"encoding/json"
+	"path/filepath"
 	"fmt"
 	"log"
 	"os"
@@ -50,6 +51,7 @@ func main() {
 // Config <- .weatherconfig.json
 type Config struct {
 	DockerfileDirectory string `json:"dockerfile"`
+	Volumes map[string]string `json:"volumes"`
 }
 
 // ContainerName <- hash of current directory
@@ -62,12 +64,14 @@ func ContainerName() string {
 	return hash([]byte(currentDirectory))
 }
 
-//  ---- commands
+//
+// COMMANDS
+//
 
 func up(context *cli.Context) {
 	config := loadConfig()
 	imageID := buildImage(config)
-	startBackgroundContainer(imageID)
+	startBackgroundContainer(imageID, config.Volumes)
 }
 
 func attach(context *cli.Context) {
@@ -84,7 +88,9 @@ func reset(context *cli.Context) {
 	attach(context)
 }
 
-//  ---- control docker
+//
+// CONTROL DOCKER
+//
 
 func buildImage(config Config) string {
 	stdoutStderr, err := exec.Command("docker", "build", "--quiet", config.DockerfileDirectory).CombinedOutput()
@@ -92,19 +98,21 @@ func buildImage(config Config) string {
 		fmt.Println(string(stdoutStderr))
 		panic(err)
 	}
-	imageID := strings.Split(string(stdoutStderr), ":")[1]
+	imageID := strings.TrimSpace(strings.Split(string(stdoutStderr), ":")[1])
 
 	fmt.Println("built image with ID:", imageID)
 	fmt.Println("from Dockerfile in:", config.DockerfileDirectory)
 
-	return strings.TrimSpace(imageID)
+	return imageID
 }
 
-func startBackgroundContainer(imageID string) {
-	docker("run", "-dti", "--name", ContainerName(), imageID)
+func startBackgroundContainer(imageID string, volumes map[string]string) {
+	docker("run", "-dti", volumesString(volumes), "--name", ContainerName(), imageID)
 }
 
-//  ---- detail
+//
+// CONFIG
+//
 
 func loadConfig() Config {
 	configFile, err := os.Open(".workspace.json")
@@ -122,6 +130,25 @@ func loadConfig() Config {
 
 	return config
 }
+
+func volumesString(volumes map[string]string) string {
+	output := ""
+
+	for host, dest := range volumes {
+		absHostPath, err := filepath.Abs(host)
+		if err != nil {
+			panic(err)
+		}
+		volumeCommand := []string{output, "-v", absHostPath, ":", dest, ""}
+		output = strings.Join(volumeCommand, "")
+	}
+
+	return output
+}
+
+//
+// HELPER
+//
 
 func docker(args ...string) {
 	cmd := exec.Command("docker", args...)
