@@ -46,7 +46,9 @@ func main() {
 	app.Run(os.Args)
 }
 
-//  ---- data
+//
+// DATA
+//
 
 // Config <- .weatherconfig.json
 type Config struct {
