@@ -3,6 +3,7 @@ package main
 import (
 	"crypto/sha1"
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
@@ -11,8 +12,6 @@ import (
 
 	"github.com/urfave/cli"
 )
-
-// -------------------------------------------------------------------------------------------------
 
 func main() {
 	app := cli.NewApp()
@@ -46,21 +45,37 @@ func main() {
 	app.Run(os.Args)
 }
 
-// -------------------------------------------------------------------------------------------------
-//  commands
-// -------------------------------------------------------------------------------------------------
+//  ---- data
+
+// Config <- .weatherconfig.json
+type Config struct {
+	DockerfileDirectory string `json:"dockerfile"`
+}
+
+// ContainerName <- hash of current directory
+func ContainerName() string {
+	currentDirectory, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+
+	return hash([]byte(currentDirectory))
+}
+
+//  ---- commands
 
 func up(context *cli.Context) {
-	imageID := buildImage()
+	config := loadConfig()
+	imageID := buildImage(config)
 	startBackgroundContainer(imageID)
 }
 
 func attach(context *cli.Context) {
-	docker("exec", "-i", "-t", containerName(), "/bin/bash")
+	docker("exec", "-i", "-t", ContainerName(), "/bin/bash")
 }
 
 func destroy(context *cli.Context) {
-	docker("rm", "--force", containerName())
+	docker("rm", "--force", ContainerName())
 }
 
 func reset(context *cli.Context) {
@@ -69,44 +84,43 @@ func reset(context *cli.Context) {
 	attach(context)
 }
 
-// -------------------------------------------------------------------------------------------------
-//  data
-// -------------------------------------------------------------------------------------------------
+//  ---- control docker
 
-func containerName() string {
-	currentDirectory, err := os.Getwd()
+func buildImage(config Config) string {
+	stdoutStderr, err := exec.Command("docker", "build", "--quiet", config.DockerfileDirectory).CombinedOutput()
 	if err != nil {
-		log.Println("ERROR: Could not get current working directory")
-		log.Fatal(err)
-	}
-
-	return hash([]byte(currentDirectory))
-}
-
-func hash(bytes []byte) string {
-	hasher := sha1.New()
-	hasher.Write(bytes)
-	sha := hex.EncodeToString(hasher.Sum(nil))
-	return sha
-}
-
-// -------------------------------------------------------------------------------------------------
-//  detail
-// -------------------------------------------------------------------------------------------------
-
-func buildImage() string {
-	stdoutStderr, err := exec.Command("docker", "build", "-q", ".").CombinedOutput()
-	if err != nil {
-		log.Println(string(stdoutStderr))
-		log.Fatal(err)
+		fmt.Println(string(stdoutStderr))
+		panic(err)
 	}
 	imageID := strings.Split(string(stdoutStderr), ":")[1]
+
 	fmt.Println("built image with ID:", imageID)
+	fmt.Println("from Dockerfile in:", config.DockerfileDirectory)
+
 	return strings.TrimSpace(imageID)
 }
 
 func startBackgroundContainer(imageID string) {
-	docker("run", "-dti", "--name", containerName(), imageID)
+	docker("run", "-dti", "--name", ContainerName(), imageID)
+}
+
+//  ---- detail
+
+func loadConfig() Config {
+	configFile, err := os.Open(".workspace.json")
+	if err != nil {
+		fmt.Println(err.Error())
+		panic(err)
+	}
+
+	var config Config
+	jsonParser := json.NewDecoder(configFile)
+	if err = jsonParser.Decode(&config); err != nil {
+		fmt.Println(err.Error())
+		panic(err)
+	}
+
+	return config
 }
 
 func docker(args ...string) {
@@ -118,4 +132,11 @@ func docker(args ...string) {
 	if err := cmd.Run(); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func hash(bytes []byte) string {
+	hasher := sha1.New()
+	hasher.Write(bytes)
+	sha := hex.EncodeToString(hasher.Sum(nil))
+	return sha
 }
