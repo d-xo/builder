@@ -1,4 +1,4 @@
-package state
+package context
 
 import (
 	"fmt"
@@ -6,17 +6,18 @@ import (
 	"path/filepath"
 )
 
-func projectRoot() string {
-	return filepath.Dir(configPath())
-}
-
 func configPath() string {
 	currentDirectory, err := os.Getwd()
 	if err != nil {
-		panic(err)
+		fmt.Println(err.Error())
+		os.Exit(1)
 	}
 
 	return findConfig(currentDirectory)
+}
+
+func projectRoot() string {
+	return filepath.Dir(configPath())
 }
 
 func findConfig(directory string) string {

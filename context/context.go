@@ -1,10 +1,10 @@
-/*
-state computes abunch of
-*/
-package state
+package context
 
 import (
+	"crypto/sha1"
+	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	"os"
 )
 
@@ -18,14 +18,24 @@ type TConfig struct {
 func Config() TConfig {
 	configFile, err := os.Open(configPath())
 	if err != nil {
-		panic(err)
+		fmt.Println(err.Error())
+		os.Exit(1)
 	}
 
 	var config TConfig
 	jsonParser := json.NewDecoder(configFile)
 	if err = jsonParser.Decode(&config); err != nil {
-		panic(err)
+		fmt.Println(err.Error())
+		os.Exit(1)
 	}
 
-	return normalizeConfig(config)
+	return makeHostPathsAbsolute(config)
+}
+
+// ContainerName is hashed from the project root
+func ContainerName() string {
+	hasher := sha1.New()
+	hasher.Write([]byte(projectRoot()))
+	sha := hex.EncodeToString(hasher.Sum(nil))
+	return sha
 }

@@ -4,7 +4,7 @@ import (
 	"testing"
 )
 
-func Test_volumesString(t *testing.T) {
+func Test_volumeArgs(t *testing.T) {
 	type args struct {
 		volumes map[string]string
 	}
@@ -24,7 +24,7 @@ func Test_volumesString(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := volumesString(tt.args.volumes); got != tt.want {
+			if got := volumeArgs(tt.args.volumes); got != tt.want {
 				t.Errorf("volumesString() = %v, want %v", got, tt.want)
 			}
 		})
