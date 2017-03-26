@@ -1,20 +1,22 @@
+/*
+state computes abunch of
+*/
 package state
 
 import (
 	"encoding/json"
 	"os"
-	"path/filepath"
 )
 
-// TConfig <- .workspace.json schema
+// TConfig enforces the .workspace.json schema
 type TConfig struct {
 	DockerfileDirectory string            `json:"dockerfileDirectory"`
 	Volumes             map[string]string `json:"volumes"`
 }
 
-// Config <- read .workspace.json from disk
+// Config reads the .workspace.json
 func Config() TConfig {
-	configFile, err := os.Open(ConfigPath())
+	configFile, err := os.Open(configPath())
 	if err != nil {
 		panic(err)
 	}
@@ -28,22 +30,7 @@ func Config() TConfig {
 	return normalizeConfig(config)
 }
 
-// ConfigPath <- recurse upwards until .workspace.json is found
-func ConfigPath() string {
-	currentDirectory, err := os.Getwd()
-	if err != nil {
-		panic(err)
-	}
-
-	return findConfig(currentDirectory)
-}
-
-// ProjectRoot <- directory of config file
-func ProjectRoot() string {
-	return filepath.Dir(ConfigPath())
-}
-
-// ContainerName <- hash of ProjectRoot()
+// ContainerName is the hash of ProjectRoot()
 func ContainerName() string {
-	return hash([]byte(ProjectRoot()))
+	return hash([]byte(projectRoot()))
 }

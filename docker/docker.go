@@ -45,9 +45,9 @@ func volumesString(volumes map[string]string) string {
 	output := ""
 
 	for host, dest := range volumes {
-		volumeCommand := []string{output, "-v", state.NormalizePath(host), ":", dest, ""}
+		volumeCommand := []string{output, "-v", state.NormalizePath(host), ":", dest, " "}
 		output = strings.Join(volumeCommand, "")
 	}
 
-	return output
+	return strings.TrimSpace(output)
 }

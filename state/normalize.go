@@ -4,13 +4,13 @@ import (
 	"path/filepath"
 )
 
-// NormalizePath <- make a path in .workspace.json absolute no matter the current working directory
+// NormalizePath makes a path in .workspace.json absolute no matter the current working directory
 func NormalizePath(path string) string {
 	if filepath.IsAbs(path) {
 		return path
 	}
 
-	return filepath.Join(ProjectRoot(), path)
+	return filepath.Join(projectRoot(), path)
 }
 
 func normalizeVolumes(volumes map[string]string) map[string]string {
