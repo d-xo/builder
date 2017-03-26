@@ -1,3 +1,5 @@
+// Package context provides functions gather information from the surrounding context
+// functions in context should not modify the context in any way
 package context
 
 import (

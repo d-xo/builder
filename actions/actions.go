@@ -1,3 +1,5 @@
+// Package actions provides functions that modify the surrounding context.
+// functions in actions should not read information from the surrounding context
 package actions
 
 import (
@@ -37,29 +39,4 @@ func Attach(containerName string) {
 func Destroy(containerName string) {
 	docker("rm", "--force", containerName)
 	fmt.Println("Destroyed container with name:", containerName)
-}
-
-func docker(args ...string) string {
-	cmd := exec.Command("docker", args...)
-	cmd.Stdin = os.Stdin
-
-	stdoutStderr, err := cmd.CombinedOutput()
-	if err != nil {
-		fmt.Println(string(stdoutStderr))
-		fmt.Println(err.Error())
-		os.Exit(1)
-	}
-
-	return string(stdoutStderr)
-}
-
-func volumeArgs(volumes map[string]string) string {
-	output := ""
-
-	for host, dest := range volumes {
-		volumeCommand := []string{output, "-v", host, ":", dest, " "}
-		output = strings.Join(volumeCommand, "")
-	}
-
-	return strings.TrimSpace(output)
 }

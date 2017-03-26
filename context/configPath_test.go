@@ -33,6 +33,11 @@ func Test_pathExists(t *testing.T) {
 			args: args{path: "/asdkucxosasd/-_-_a/df-i/rlly-hope-nobody-ever-has-a-path-like-this"},
 			want: false,
 		},
+		{
+			name: "invalid path -> false",
+			args: args{path: "*&*&%(%*&@_!_&@!(*@^@!&^)*$%*&#)!_@&*$#@*$%))"},
+			want: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
