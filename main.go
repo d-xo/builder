@@ -4,8 +4,8 @@ import (
 	"os"
 
 	"github.com/urfave/cli"
+	"github.com/xwvvvvwx/builder/actions"
 	"github.com/xwvvvvwx/builder/context"
-	"github.com/xwvvvvwx/builder/docker"
 )
 
 func main() {
@@ -20,8 +20,9 @@ func main() {
 			Usage: "spin up the project build envionment",
 			Action: func(c *cli.Context) {
 
-				imageID := docker.BuildImage(context.Config().DockerfileDirectory)
-				docker.StartBackgroundContainer(imageID, context.ContainerName(), context.Config().Volumes)
+				imageID := actions.BuildImage(context.Config().DockerfileDirectory)
+				actions.StartBackgroundContainer(
+					imageID, context.ContainerName(), context.Config().Volumes)
 
 			},
 		},
@@ -30,7 +31,7 @@ func main() {
 			Usage: "Attach to the project build environment. Will bring envionment up if needed",
 			Action: func(c *cli.Context) {
 
-				docker.Attach(context.ContainerName())
+				actions.Attach(context.ContainerName())
 
 			},
 		},
@@ -39,18 +40,19 @@ func main() {
 			Usage: "destroy the project build environment",
 			Action: func(c *cli.Context) {
 
-				docker.Destroy(context.ContainerName())
+				actions.Destroy(context.ContainerName())
 
 			},
 		},
 		{
 			Name:  "clean",
-			Usage: "destroy and rebuild the current environment",
+			Usage: "destroy and rebuild the project build environment",
 			Action: func(c *cli.Context) {
 
-				docker.Destroy(context.ContainerName())
-				imageID := docker.BuildImage(context.Config().DockerfileDirectory)
-				docker.StartBackgroundContainer(imageID, context.ContainerName(), context.Config().Volumes)
+				actions.Destroy(context.ContainerName())
+				imageID := actions.BuildImage(context.Config().DockerfileDirectory)
+				actions.StartBackgroundContainer(
+					imageID, context.ContainerName(), context.Config().Volumes)
 
 			},
 		},

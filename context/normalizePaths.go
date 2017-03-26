@@ -6,11 +6,11 @@ import (
 
 func makeHostPathsAbsolute(config TConfig) TConfig {
 	config.DockerfileDirectory = makePathAbsolute(config.DockerfileDirectory)
-	config.Volumes = makeKeysAbsolutePaths(config.Volumes)
+	config.Volumes = makeKeysAbsolute(config.Volumes)
 	return config
 }
 
-func makeKeysAbsolutePaths(volumes map[string]string) map[string]string {
+func makeKeysAbsolute(volumes map[string]string) map[string]string {
 	normalizedVolumes := make(map[string]string)
 	for host, guest := range volumes {
 		normalizedVolumes[makePathAbsolute(host)] = guest
@@ -22,6 +22,5 @@ func makePathAbsolute(path string) string {
 	if filepath.IsAbs(path) {
 		return path
 	}
-
 	return filepath.Join(projectRoot(), path)
 }
