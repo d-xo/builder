@@ -23,7 +23,7 @@ The following options can be set:
 
 **Core Commands**
 
-- `builder up`: builds the environment specified in the .workspace.json
+- `builder up`: spins up the environment specified in the .workspace.json
 - `builder attach`: spawns a new shell in the environment
 - `builder destroy`: destroys the environment
-- `builder clean`: destroy, rebuild, attach
+- `builder clean`: reset the environment to the state specified in the .workspace.json
