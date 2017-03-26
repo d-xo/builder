@@ -14,7 +14,7 @@ The following options can be set:
 
 ```
 {
-    "dockerfile": "<PATH_TO_DOCKERFILE_DIRECTORY>"
+    "dockerfileDirectory": "<PATH_TO_DOCKERFILE_DIRECTORY>"
     "volumes": {
         "<HOST>":"<GUEST>"
     }

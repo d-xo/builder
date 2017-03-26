@@ -52,8 +52,8 @@ func main() {
 
 // Config <- .weatherconfig.json
 type Config struct {
-	DockerfileDirectory string `json:"dockerfile"`
-	Volumes map[string]string `json:"volumes"`
+	DockerfileDirectory string            `json:"dockerfileDirectory"`
+	Volumes             map[string]string `json:"volumes"`
 }
 
 // ContainerName <- hash of current directory
