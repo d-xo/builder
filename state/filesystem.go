@@ -21,7 +21,6 @@ func findConfig(directory string) string {
 	return findConfig(filepath.Dir(directory))
 }
 
-
 func pathExists(path string) bool {
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		return false

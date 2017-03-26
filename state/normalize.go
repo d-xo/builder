@@ -10,7 +10,7 @@ func NormalizePath(path string) string {
 		return path
 	}
 
-	return filepath.Join(ConfigDir(), path)
+	return filepath.Join(ProjectRoot(), path)
 }
 
 func normalizeVolumes(volumes map[string]string) map[string]string {

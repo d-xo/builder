@@ -38,12 +38,12 @@ func ConfigPath() string {
 	return findConfig(currentDirectory)
 }
 
-// ConfigDir <- directory of config file
-func ConfigDir() string {
+// ProjectRoot <- directory of config file
+func ProjectRoot() string {
 	return filepath.Dir(ConfigPath())
 }
 
-// ContainerName <- hash of ConfigPath()
+// ContainerName <- hash of ProjectRoot()
 func ContainerName() string {
-	return hash([]byte(ConfigPath()))
+	return hash([]byte(ProjectRoot()))
 }

@@ -1,6 +1,6 @@
 # Workspace
 
-`workspace` is a tool to help manage isolated per project development environments
+`workspace` is a tool to help manage isolated per project build environments
 
 You can think of it as an extremely simplified version of vagrant that works only with docker containers.
 
@@ -8,7 +8,7 @@ You can think of it as an extremely simplified version of vagrant that works onl
 
 **Config**
 
-Configuration is read from a `.workspace.json` file in the current working directory.
+Configuration is read from a `.workspace.json` file in the project root
 
 The following options can be set:
 
@@ -26,4 +26,4 @@ The following options can be set:
 - `workspace up`: builds the environment specified in the .workspace.json
 - `workspace attach`: spawns a new shell in the environment
 - `workspace destroy`: destroys the environment
-- `workspace reset`: destroy, rebuild, attach
+- `workspace clean`: destroy, rebuild, attach

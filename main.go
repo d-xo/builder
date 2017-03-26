@@ -4,8 +4,8 @@ import (
 	"os"
 
 	"github.com/urfave/cli"
-	"github.com/xwvvvvwx/workspace/state"
 	"github.com/xwvvvvwx/workspace/docker"
+	"github.com/xwvvvvwx/workspace/state"
 )
 
 func main() {

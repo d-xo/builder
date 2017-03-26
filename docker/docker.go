@@ -2,10 +2,10 @@ package docker
 
 import (
 	"fmt"
+	"github.com/xwvvvvwx/workspace/state"
 	"os"
 	"os/exec"
 	"strings"
-	"github.com/xwvvvvwx/workspace/state"
 )
 
 // BuildImage builds Dockerfile specified in the config and returns the resulting Image ID
@@ -24,10 +24,12 @@ func BuildImage(config state.TConfig) string {
 	return imageID
 }
 
+// StartBackgroundContainer brings up a container with the given imageID and volume mappings
 func StartBackgroundContainer(imageID string, volumes map[string]string) {
-	Docker("run", "-dti", dockerArgsVolumesString(volumes), "--name", state.ContainerName(), imageID)
+	Docker("run", "-dti", volumesString(volumes), "--name", state.ContainerName(), imageID)
 }
 
+// Docker executes docker with the given args
 func Docker(args ...string) {
 	cmd := exec.Command("docker", args...)
 	cmd.Stdin = os.Stdin
@@ -39,7 +41,7 @@ func Docker(args ...string) {
 	}
 }
 
-func dockerArgsVolumesString(volumes map[string]string) string {
+func volumesString(volumes map[string]string) string {
 	output := ""
 
 	for host, dest := range volumes {
