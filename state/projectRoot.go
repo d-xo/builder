@@ -4,29 +4,10 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"crypto/sha1"
-	"encoding/hex"
 )
 
-func pathExists(path string) bool {
-	if _, err := os.Stat(path); os.IsNotExist(err) {
-		return false
-	}
-	return true
-}
-
-func isPathRoot(path string) bool {
-	if filepath.Dir(path) == filepath.Dir(filepath.Dir(path)) {
-		return true
-	}
-	return false
-}
-
-func hash(bytes []byte) string {
-	hasher := sha1.New()
-	hasher.Write(bytes)
-	sha := hex.EncodeToString(hasher.Sum(nil))
-	return sha
+func projectRoot() string {
+	return filepath.Dir(configPath())
 }
 
 func configPath() string {
@@ -37,11 +18,6 @@ func configPath() string {
 
 	return findConfig(currentDirectory)
 }
-
-func projectRoot() string {
-	return filepath.Dir(configPath())
-}
-
 
 func findConfig(directory string) string {
 	configFile := filepath.Join(directory, ".workspace.json")
@@ -56,4 +32,18 @@ func findConfig(directory string) string {
 	}
 
 	return findConfig(filepath.Dir(directory))
+}
+
+func pathExists(path string) bool {
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		return false
+	}
+	return true
+}
+
+func isPathRoot(path string) bool {
+	if filepath.Dir(path) == filepath.Dir(filepath.Dir(path)) {
+		return true
+	}
+	return false
 }

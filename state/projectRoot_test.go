@@ -88,7 +88,7 @@ func Test_hash(t *testing.T) {
 	}{
 		{
 			name: "correct hash is computed",
-			args: args{ bytes: []byte{10, 5, 7, 8, 14} },
+			args: args{bytes: []byte{10, 5, 7, 8, 14}},
 			want: "8541cb67c204e32e4f39ea9f7132b8a37e369aa5",
 		},
 	}

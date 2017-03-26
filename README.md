@@ -1,8 +1,7 @@
-# Workspace
+# builder
 
-`workspace` is a tool to help manage isolated per project build environments
+`builder` is a tool to help manage isolated per project build environments
 
-You can think of it as an extremely simplified version of vagrant that works only with docker containers.
 
 ## Usage
 
@@ -14,16 +13,17 @@ The following options can be set:
 
 ```
 {
-    "dockerfileDirectory": "<PATH_TO_DOCKERFILE_DIRECTORY>"
+    "dockerfileDirectory": "<PATH_TO_DOCKERFILE_DIRECTORY>",
     "volumes": {
         "<HOST>":"<GUEST>"
-    }
+    },
+    ""
 }
 ```
 
-**Commands**
+**Core Commands**
 
-- `workspace up`: builds the environment specified in the .workspace.json
-- `workspace attach`: spawns a new shell in the environment
-- `workspace destroy`: destroys the environment
-- `workspace clean`: destroy, rebuild, attach
+- `builder up`: builds the environment specified in the .workspace.json
+- `builder attach`: spawns a new shell in the environment
+- `builder destroy`: destroys the environment
+- `builder clean`: destroy, rebuild, attach

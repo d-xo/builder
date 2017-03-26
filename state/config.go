@@ -29,8 +29,3 @@ func Config() TConfig {
 
 	return normalizeConfig(config)
 }
-
-// ContainerName is the hash of ProjectRoot()
-func ContainerName() string {
-	return hash([]byte(projectRoot()))
-}
