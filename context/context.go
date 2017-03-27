@@ -1,5 +1,5 @@
 // Package context provides functions gather information from the surrounding context
-// functions in context should not modify the context in any way
+// functions in context should be pure
 package context
 
 import (
@@ -14,6 +14,7 @@ import (
 type TConfig struct {
 	DockerfileDirectory string            `json:"dockerfileDirectory"`
 	Volumes             map[string]string `json:"volumes"`
+	Alias               map[string]string `json:"commands"`
 }
 
 // Config reads the .workspace.json
@@ -40,4 +41,15 @@ func ContainerName() string {
 	hasher.Write([]byte(projectRoot()))
 	sha := hex.EncodeToString(hasher.Sum(nil))
 	return sha
+}
+
+// CommandFromAlias searches for the given alias in the .workspace.json
+func CommandFromAlias(aliasName string) string {
+	value, present := Config().Alias[aliasName]
+	if !present {
+		fmt.Println(aliasName, "was not found in", configPath())
+		os.Exit(1)
+	}
+	fmt.Println(value)
+	return value
 }

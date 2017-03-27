@@ -37,6 +37,16 @@ func main() {
 			},
 		},
 		{
+			Name:  "run",
+			Usage: "exec `alias` defined in .workspace.json",
+			Action: func(c *cli.Context) {
+
+				aliasName := c.Args().First()
+				actions.ExecuteCommand(context.ContainerName(), context.CommandFromAlias(aliasName))
+
+			},
+		},
+		{
 			Name:  "attach",
 			Usage: "Attach to the project build environment. Will bring envionment up if needed",
 			Action: func(c *cli.Context) {
