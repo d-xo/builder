@@ -27,6 +27,16 @@ func main() {
 			},
 		},
 		{
+			Name:  "exec",
+			Usage: "execute a single command inside the build environment",
+			Action: func(c *cli.Context) {
+
+				command := append([]string{c.Args().First()}, c.Args().Tail()...)
+				actions.ExecuteCommand(context.ContainerName(), command...)
+
+			},
+		},
+		{
 			Name:  "attach",
 			Usage: "Attach to the project build environment. Will bring envionment up if needed",
 			Action: func(c *cli.Context) {
