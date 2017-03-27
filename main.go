@@ -48,7 +48,7 @@ func main() {
 		},
 		{
 			Name:  "attach",
-			Usage: "Attach to the project build environment. Will bring envionment up if needed",
+			Usage: "Attach to the project build environment.",
 			Action: func(c *cli.Context) {
 
 				actions.Attach(context.ContainerName())
@@ -73,6 +73,33 @@ func main() {
 				imageID := actions.BuildImage(context.Config().DockerfileDirectory)
 				actions.StartBackgroundContainer(
 					imageID, context.ContainerName(), context.Config().Volumes)
+
+			},
+		},
+		{
+			Name:  "build",
+			Usage: "executes the build alias",
+			Action: func(c *cli.Context) {
+
+				actions.ExecuteCommand(context.ContainerName(), context.CommandFromAlias("build"))
+
+			},
+		},
+		{
+			Name:  "verify",
+			Usage: "executes the verify alias",
+			Action: func(c *cli.Context) {
+
+				actions.ExecuteCommand(context.ContainerName(), context.CommandFromAlias("verify"))
+
+			},
+		},
+		{
+			Name:  "package",
+			Usage: "executes the package alias",
+			Action: func(c *cli.Context) {
+
+				actions.ExecuteCommand(context.ContainerName(), context.CommandFromAlias("package"))
 
 			},
 		},
