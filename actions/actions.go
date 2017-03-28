@@ -48,5 +48,5 @@ func ExecuteCommand(containerName string, command ...string) {
 // StartBackgroundContainer brings up a container with the given imageID and volume mappings
 func StartBackgroundContainer(imageID string, name string, volumes map[string]string) {
 	docker("run", "-dti", volumeArgs(volumes), "--name", name, imageID)
-	fmt.Println("started background container withname:", name)
+	fmt.Println("started background container with name:", name)
 }
