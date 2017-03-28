@@ -10,14 +10,14 @@ import (
 	"os"
 )
 
-// TConfig enforces the .workspace.json schema
+// TConfig enforces the .builder.json schema
 type TConfig struct {
 	DockerfileDirectory string            `json:"dockerfileDirectory"`
 	Volumes             map[string]string `json:"volumes"`
 	Alias               map[string]string `json:"commands"`
 }
 
-// Config reads the .workspace.json
+// Config reads the .builder.json
 func Config() TConfig {
 	configFile, err := os.Open(configPath())
 	if err != nil {
@@ -43,7 +43,7 @@ func ContainerName() string {
 	return sha
 }
 
-// CommandFromAlias searches for the given alias in the .workspace.json
+// CommandFromAlias searches for the given alias in the .builder.json
 func CommandFromAlias(aliasName string) string {
 	value, present := Config().Alias[aliasName]
 	if !present {

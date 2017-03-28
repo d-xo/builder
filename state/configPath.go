@@ -21,14 +21,14 @@ func projectRoot() string {
 }
 
 func findConfig(directory string) string {
-	configFile := filepath.Join(directory, ".workspace.json")
+	configFile := filepath.Join(directory, ".builder.json")
 
 	if pathExists(configFile) {
 		return configFile
 	}
 
 	if isPathRoot(directory) {
-		fmt.Println("No .workspace.json found")
+		fmt.Println("No .builder.json found")
 		os.Exit(1)
 	}
 

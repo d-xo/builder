@@ -26,7 +26,7 @@ func main() {
 		},
 		{
 			Name:   "run",
-			Usage:  "exec `alias` defined in .workspace.json",
+			Usage:  "exec `alias` defined in .builder.json",
 			Action: commands.Run,
 		},
 		{

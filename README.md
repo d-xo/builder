@@ -19,7 +19,7 @@ The environment persists in the background between command executions to allow f
 
 **Config**
 
-Configuration is read from a `.workspace.json` file in the project root
+Configuration is read from a `.builder.json` file in the project root
 
 The following options can be set:
 
@@ -39,15 +39,15 @@ The following options can be set:
 
 **Core Commands**
 
-- `builder up`: spins up the environment specified in the .workspace.json
+- `builder up`: spins up the environment specified in the .builder.json
 - `builder exec`: executes a single command in the build environment
 - `builder attach`: spawns a new bash shell in the build environment
 - `builder destroy`: destroys the build environment
-- `builder clean`: reset the environment to the state specified in the .workspace.json
+- `builder clean`: reset the environment to the state specified in the .builder.json
 
 **User Defined Commands**
 
-Users can define command aliases in the .workspace.json. These commands can be accessed via `builder run commandName`.
+Users can define command aliases in the .builder.json. These commands can be accessed via `builder run commandName`.
 
 The following aliases can be accessed without the `run` keyword:
 
