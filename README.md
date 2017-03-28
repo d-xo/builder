@@ -2,6 +2,8 @@
 
 `builder` is a tool to help manage dockerized project build environments.
 
+You can think of it as something like vagrant mixed with npm.
+
 Define your build environment in a Dockerfile and then define custom user commands to be executed in
 that build environment.
 

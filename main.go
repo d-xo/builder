@@ -5,7 +5,7 @@ import (
 
 	"github.com/urfave/cli"
 	"github.com/xwvvvvwx/builder/actions"
-	"github.com/xwvvvvwx/builder/context"
+	"github.com/xwvvvvwx/builder/transforms"
 )
 
 func main() {
@@ -20,9 +20,9 @@ func main() {
 			Usage: "spin up the project build envionment",
 			Action: func(c *cli.Context) {
 
-				imageID := actions.BuildImage(context.Config().DockerfileDirectory)
+				imageID := actions.BuildImage(transforms.Config().DockerfileDirectory)
 				actions.StartBackgroundContainer(
-					imageID, context.ContainerName(), context.Config().Volumes)
+					imageID, transforms.ContainerName(), transforms.Config().Volumes)
 
 			},
 		},
@@ -32,7 +32,7 @@ func main() {
 			Action: func(c *cli.Context) {
 
 				command := append([]string{c.Args().First()}, c.Args().Tail()...)
-				actions.ExecuteCommand(context.ContainerName(), command...)
+				actions.ExecuteCommand(transforms.ContainerName(), command...)
 
 			},
 		},
@@ -42,7 +42,7 @@ func main() {
 			Action: func(c *cli.Context) {
 
 				aliasName := c.Args().First()
-				actions.ExecuteCommand(context.ContainerName(), context.CommandFromAlias(aliasName))
+				actions.ExecuteCommand(transforms.ContainerName(), transforms.CommandFromAlias(aliasName))
 
 			},
 		},
@@ -51,7 +51,7 @@ func main() {
 			Usage: "Attach to the project build environment.",
 			Action: func(c *cli.Context) {
 
-				actions.Attach(context.ContainerName())
+				actions.Attach(transforms.ContainerName())
 
 			},
 		},
@@ -60,7 +60,7 @@ func main() {
 			Usage: "destroy the project build environment",
 			Action: func(c *cli.Context) {
 
-				actions.Destroy(context.ContainerName())
+				actions.Destroy(transforms.ContainerName())
 
 			},
 		},
@@ -69,10 +69,10 @@ func main() {
 			Usage: "destroy and rebuild the project build environment",
 			Action: func(c *cli.Context) {
 
-				actions.Destroy(context.ContainerName())
-				imageID := actions.BuildImage(context.Config().DockerfileDirectory)
+				actions.Destroy(transforms.ContainerName())
+				imageID := actions.BuildImage(transforms.Config().DockerfileDirectory)
 				actions.StartBackgroundContainer(
-					imageID, context.ContainerName(), context.Config().Volumes)
+					imageID, transforms.ContainerName(), transforms.Config().Volumes)
 
 			},
 		},
@@ -81,7 +81,16 @@ func main() {
 			Usage: "executes the build alias",
 			Action: func(c *cli.Context) {
 
-				actions.ExecuteCommand(context.ContainerName(), context.CommandFromAlias("build"))
+				actions.ExecuteCommand(transforms.ContainerName(), transforms.CommandFromAlias("build"))
+
+			},
+		},
+		{
+			Name:  "start",
+			Usage: "executes the start alias",
+			Action: func(c *cli.Context) {
+
+				actions.ExecuteCommand(transforms.ContainerName(), transforms.CommandFromAlias("start"))
 
 			},
 		},
@@ -90,7 +99,7 @@ func main() {
 			Usage: "executes the verify alias",
 			Action: func(c *cli.Context) {
 
-				actions.ExecuteCommand(context.ContainerName(), context.CommandFromAlias("verify"))
+				actions.ExecuteCommand(transforms.ContainerName(), transforms.CommandFromAlias("verify"))
 
 			},
 		},
@@ -99,7 +108,7 @@ func main() {
 			Usage: "executes the package alias",
 			Action: func(c *cli.Context) {
 
-				actions.ExecuteCommand(context.ContainerName(), context.CommandFromAlias("package"))
+				actions.ExecuteCommand(transforms.ContainerName(), transforms.CommandFromAlias("package"))
 
 			},
 		},

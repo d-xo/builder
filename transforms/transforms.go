@@ -1,6 +1,6 @@
-// Package context provides functions gather information from the surrounding context
-// functions in context should be pure
-package context
+// Package transforms provides functions gather information from the surrounding context
+// functions in transforms should be pure
+package transforms
 
 import (
 	"crypto/sha1"

@@ -1,5 +1,5 @@
-// Package actions provides functions that modify the surrounding context.
-// functions in actions should not read information from the surrounding context
+// Package actions provides functions that modify the surrounding transforms.
+// functions in actions should not read information from the surrounding transforms
 package actions
 
 import (
