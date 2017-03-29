@@ -2,8 +2,6 @@
 
 `builder` is a tool to help manage dockerized project build environments.
 
-You can think of it as something like vagrant mixed with npm.
-
 Define your build environment in a Dockerfile and then define custom user commands to be executed in
 that build environment.
 
@@ -47,9 +45,9 @@ The following options can be set:
 
 **User Defined Commands**
 
-Users can define command aliases in the .builder.json. These commands can be accessed via `builder run commandName`.
+Users can define command aliases in the .builder.json. These commands can be accessed via `builder cmd <ALIAS_NAME>`.
 
-The following aliases can be accessed without the `run` keyword:
+The following aliases are special and can be accessed without the `cmd` keyword:
 
 - `builder build`
 - `builder verify`
