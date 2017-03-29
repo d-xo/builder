@@ -52,3 +52,4 @@ The following aliases are special and can be accessed without the `cmd` keyword:
 - `builder build`
 - `builder verify`
 - `builder package`
+- `builder start`
