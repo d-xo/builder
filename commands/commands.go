@@ -1,24 +1,24 @@
 // Package commands implements the UI.
-// State is passed into actions to modify the surroundings.
+// Pass state into actions to modify the surroundings
 package commands
 
 import (
 	"github.com/urfave/cli"
 	"github.com/xwvvvvwx/builder/actions"
-	"github.com/xwvvvvwx/builder/state"
+	"github.com/xwvvvvwx/builder/data"
 )
 
 // Up starts a background container from the Dockerfile specified in the config
 func Up(c *cli.Context) {
-	imageID := actions.BuildImage(state.Config().DockerfileDirectory)
+	imageID := actions.BuildImage(data.Config().DockerfileDirectory)
 	actions.StartBackgroundContainer(
-		imageID, state.ContainerName(), state.Config().Volumes)
+		imageID, data.ContainerName(), data.Config().Volumes)
 }
 
 // Exec executes a single command in the build environment
 func Exec(c *cli.Context) {
 	command := append([]string{c.Args().First()}, c.Args().Tail()...)
-	actions.ExecuteCommand(state.ContainerName(), command...)
+	actions.ExecuteCommand(data.ContainerName(), command...)
 }
 
 // Run executes the specified alias
@@ -29,12 +29,12 @@ func Run(c *cli.Context) {
 
 // Attach spawns a bash shell in the build environment
 func Attach(c *cli.Context) {
-	actions.Attach(state.ContainerName())
+	actions.Attach(data.ContainerName())
 }
 
 // Destroy destroys the build environment
 func Destroy(c *cli.Context) {
-	actions.Destroy(state.ContainerName())
+	actions.Destroy(data.ContainerName())
 }
 
 // Clean resets the build environment to the state specified in the Dockerfile
@@ -64,5 +64,5 @@ func Package(c *cli.Context) {
 }
 
 func executeAlias(aliasName string) {
-	actions.ExecuteCommand(state.ContainerName(), state.CommandFromAlias(aliasName))
+	actions.ExecuteCommand(data.ContainerName(), data.CommandFromAlias(aliasName))
 }

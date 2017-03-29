@@ -1,5 +1,5 @@
 // Package actions provides functions that modify the surrounding transforms.
-// functions in actions should not read information from the surrounding transforms
+// All state in actions should be passed in as a parameter (i.e. don't read info from the surroundings)
 package actions
 
 import (

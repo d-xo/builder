@@ -1,6 +1,6 @@
-// Package state provides functions gather information from the surrounding context
-// functions in transforms should be pure
-package state
+// Package data provides functions that gather information from the surroundings
+// functions in data should not modify the surroundings in any way
+package data
 
 import (
 	"crypto/sha1"

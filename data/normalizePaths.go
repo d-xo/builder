@@ -1,4 +1,4 @@
-package state
+package data
 
 import (
 	"path/filepath"
