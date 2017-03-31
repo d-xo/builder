@@ -20,7 +20,7 @@ func Attach(containerName string) {
 
 // BuildImage builds Dockerfile specified in the config and returns the resulting Image ID
 func BuildImage(dockerFileDirectory string) string {
-	stdoutStderr := docker("build", "--quiet", dockerFileDirectory)
+	stdoutStderr := dockerCommandLine("build", "--quiet", dockerFileDirectory)
 	imageID := strings.TrimSpace(strings.Split(string(stdoutStderr), ":")[1])
 
 	fmt.Println("built image with ID:", imageID)
@@ -31,7 +31,7 @@ func BuildImage(dockerFileDirectory string) string {
 
 // Destroy the container with the given name
 func Destroy(containerName string) {
-	docker("rm", "--force", containerName)
+	dockerCommandLine("rm", "--force", containerName)
 	fmt.Println("Destroyed container with name:", containerName)
 }
 
@@ -47,6 +47,6 @@ func ExecuteCommand(containerName string, command ...string) {
 
 // StartBackgroundContainer brings up a container with the given imageID and volume mappings
 func StartBackgroundContainer(imageID string, name string, volumes map[string]string) {
-	docker("run", "-dti", volumeArgs(volumes), "--name", name, imageID)
+	dockerCommandLine("run", "-dti", volumeArgs(volumes), "--name", name, imageID)
 	fmt.Println("started background container with name:", name)
 }

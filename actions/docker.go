@@ -43,7 +43,7 @@ func hasContainerWithName(containerName string, containers []types.Container) bo
 	return false
 }
 
-func docker(args ...string) string {
+func dockerCommandLine(args ...string) string {
 	cmd := exec.Command("docker", args...)
 	cmd.Stdin = os.Stdin
 
