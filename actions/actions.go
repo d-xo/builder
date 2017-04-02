@@ -37,7 +37,7 @@ func Destroy(containerName string) {
 
 // ExecuteCommand runs a single command in the project build environment
 func ExecuteCommand(containerName string, command ...string) {
-	args := append([]string{"exec", "-i", "-t", containerName}, command...)
+	args := append([]string{"exec", "-t", containerName}, command...)
 	cmd := exec.Command("docker", args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
