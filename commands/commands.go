@@ -10,21 +10,30 @@ import (
 
 // Up starts a background container from the Dockerfile specified in the config
 func Up(c *cli.Context) {
+	if actions.IsContainerPresent(data.ContainerName()) {
+		Destroy(c)
+	}
+
 	imageID := actions.BuildImage(data.Config().DockerfileDirectory)
 	actions.StartBackgroundContainer(
-		imageID, data.ContainerName(), data.Config().Volumes)
+		imageID, data.ContainerName(),
+		data.Config().Volumes,
+	)
 }
 
 // Exec executes a single command in the build environment
 func Exec(c *cli.Context) {
+	if !actions.IsContainerPresent(data.ContainerName()) {
+		Up(c)
+	}
 	command := append([]string{c.Args().First()}, c.Args().Tail()...)
-	actions.ExecuteCommand(data.ContainerName(), command...)
+	actions.ExecuteDockerCommand(data.ContainerName(), command...)
 }
 
 // Run executes the specified alias
 func Run(c *cli.Context) {
 	aliasName := c.Args().First()
-	executeAlias(aliasName)
+	executeAlias(c, aliasName)
 }
 
 // Attach spawns a bash shell in the build environment
@@ -45,24 +54,27 @@ func Clean(c *cli.Context) {
 
 // Build executes the "build" alias
 func Build(c *cli.Context) {
-	executeAlias("build")
+	executeAlias(c, "build")
 }
 
 // Start executes the "start" alias
 func Start(c *cli.Context) {
-	executeAlias("start")
+	executeAlias(c, "start")
 }
 
 // Verify executes the "verify" alias
 func Verify(c *cli.Context) {
-	executeAlias("verify")
+	executeAlias(c, "verify")
 }
 
 // Package executes the "package" alias
 func Package(c *cli.Context) {
-	executeAlias("package")
+	executeAlias(c, "package")
 }
 
-func executeAlias(aliasName string) {
-	actions.ExecuteCommand(data.ContainerName(), data.CommandFromAlias(aliasName))
+func executeAlias(c *cli.Context, aliasName string) {
+	if !actions.IsContainerPresent(data.ContainerName()) {
+		Up(c)
+	}
+	actions.ExecuteDockerCommand(data.ContainerName(), data.CommandFromAlias(aliasName))
 }
