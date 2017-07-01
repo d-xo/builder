@@ -15,6 +15,7 @@ type TConfig struct {
 	DockerfileDirectory string            `json:"dockerfileDirectory"`
 	Volumes             map[string]string `json:"volumes"`
 	Alias               map[string]string `json:"commands"`
+	ContainerName       string            `json:"containerName"`
 }
 
 // Config reads the .builder.json
@@ -37,6 +38,10 @@ func Config() TConfig {
 
 // ContainerName is hashed from the project root
 func ContainerName() string {
+	if Config().ContainerName != "" {
+		return Config().ContainerName
+	}
+
 	hasher := sha1.New()
 	hasher.Write([]byte(projectRoot()))
 	sha := hex.EncodeToString(hasher.Sum(nil))

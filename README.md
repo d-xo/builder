@@ -24,6 +24,7 @@ The following options can be set:
 ```
 {
     "dockerfileDirectory": "<PATH_TO_DOCKERFILE_DIRECTORY>",
+    "containerName": "<NAME_OF_BACKGROUND_CONTAINER>",
     "volumes": {
         "<HOST>":"<GUEST>"
     },
@@ -34,6 +35,10 @@ The following options can be set:
     }
 }
 ```
+
+***Defaults**
+
+- `containerName`: will fallback to a hash of the dockerfile directory name
 
 **Core Commands**
 
