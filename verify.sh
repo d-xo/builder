@@ -1,1 +1,3 @@
-gofmt -s -w **/*.go && gometalinter && go test ./**/ && go install
+#! /usr/bin/env bash
+
+gofmt -s -w ./**/*.go && golint && go test ./**/ && go install
