@@ -19,7 +19,15 @@ func Attach(containerName string) {
 }
 
 // BuildImage builds Dockerfile specified in the config and returns the resulting Image ID
+// run build twice, once to build the image (with stdout), and once to get the image ID
+// this is UGLY
 func BuildImage(dockerFileDirectory string) string {
+	cmd := exec.Command("docker", "build", dockerFileDirectory)
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	cmd.Run()
+
 	stdoutStderr := dockerCommandLine("build", "--quiet", dockerFileDirectory)
 	imageID := strings.TrimSpace(strings.Split(string(stdoutStderr), ":")[1])
 
