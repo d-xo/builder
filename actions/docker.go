@@ -1,13 +1,13 @@
 package actions
 
 import (
-	"context"
 	"fmt"
-	"github.com/docker/docker/api/types"
-	"github.com/docker/docker/client"
 	"os"
 	"os/exec"
 	"strings"
+
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/client"
 )
 
 func dockerClient() *client.Client {
@@ -16,20 +16,6 @@ func dockerClient() *client.Client {
 		panic(err)
 	}
 	return cli
-}
-
-func IsContainerPresent(candidateName string) bool {
-	allContainers, err := dockerClient().ContainerList(
-		context.Background(),
-		types.ContainerListOptions{
-			All: true,
-		},
-	)
-	if err != nil {
-		panic(err)
-	}
-
-	return containerWithNameExists(candidateName, allContainers)
 }
 
 func containerWithNameExists(containerName string, containers []types.Container) bool {

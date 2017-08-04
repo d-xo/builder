@@ -3,10 +3,14 @@
 package actions
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"os/exec"
 	"strings"
+
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/filters"
 )
 
 // Attach spawns a bash shell in the container with the given name
@@ -57,4 +61,38 @@ func ExecuteDockerCommand(containerName string, command ...string) {
 func StartBackgroundContainer(imageID string, name string, volumes map[string]string) {
 	dockerCommandLine("run", "-dti", volumeArgs(volumes), "--name", name, imageID)
 	fmt.Println("started background container with name:", name)
+}
+
+// IsContainerPresent checks if a container exists on the system
+func IsContainerPresent(candidateName string) bool {
+	allContainers, err := dockerClient().ContainerList(
+		context.Background(),
+		types.ContainerListOptions{
+			All: true,
+		},
+	)
+	if err != nil {
+		panic(err)
+	}
+
+	return containerWithNameExists(candidateName, allContainers)
+}
+
+// IsContainerRunning checks if a container is running
+func IsContainerRunning(candidateName string) bool {
+	runningContainerFilters := filters.NewArgs()
+	runningContainerFilters.Add("status", "running")
+
+	allContainers, err := dockerClient().ContainerList(
+		context.Background(),
+		types.ContainerListOptions{
+			All:     true,
+			Filters: runningContainerFilters,
+		},
+	)
+	if err != nil {
+		panic(err)
+	}
+
+	return containerWithNameExists(candidateName, allContainers)
 }

@@ -78,7 +78,7 @@ func Benchmark(c *cli.Context) {
 }
 
 func executeAlias(c *cli.Context, aliasName string) {
-	if !actions.IsContainerPresent(data.ContainerName()) {
+	if !actions.IsContainerRunning(data.ContainerName()) {
 		Up(c)
 	}
 	actions.ExecuteDockerCommand(data.ContainerName(), data.CommandFromAlias(aliasName))
