@@ -59,12 +59,11 @@ func ExecuteDockerCommand(containerName string, command ...string) {
 
 // StartBackgroundContainer brings up a container with the given imageID and volume mappings
 func StartBackgroundContainer(imageID string, name string, volumes map[string]string) {
-
 	dockerCommandLine("run", "-dti", volumeArgs(volumes), "--name", name, imageID)
 	fmt.Println("started background container with name:", name)
 }
 
-// IsContainerPresent checks if a container exists on the system
+// IsContainerPresent checks if a container with the given name is present on the system in any state (running, stopped etc...)
 func IsContainerPresent(candidateName string) bool {
 	allContainers, err := dockerClient().ContainerList(
 		context.Background(),
@@ -79,7 +78,7 @@ func IsContainerPresent(candidateName string) bool {
 	return containerWithNameExists(candidateName, allContainers)
 }
 
-// IsContainerRunning checks if a container is running
+// IsContainerRunning checks if a container with the given name is running
 func IsContainerRunning(candidateName string) bool {
 	runningContainerFilters := filters.NewArgs()
 	runningContainerFilters.Add("status", "running")
