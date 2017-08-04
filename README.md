@@ -50,9 +50,9 @@ The following options can be set:
 
 **User Defined Commands**
 
-Users can define command aliases in the .builder.json. These commands can be accessed via `builder cmd <ALIAS_NAME>`.
+Users can define command aliases in the .builder.json. These commands can be accessed via `builder run <ALIAS_NAME>`.
 
-The following aliases are special and can be accessed without the `cmd` keyword:
+The following aliases are special and can be accessed without the `run` keyword:
 
 - `builder build`
 - `builder verify`
