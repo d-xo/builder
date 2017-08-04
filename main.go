@@ -64,6 +64,11 @@ func main() {
 			Usage:  "executes the package alias",
 			Action: commands.Package,
 		},
+		{
+			Name:   "benchmark",
+			Usage:  "executes the benchmark alias",
+			Action: commands.Benchmark,
+		},
 	}
 
 	if err := app.Run(os.Args); err != nil {

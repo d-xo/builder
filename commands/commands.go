@@ -72,6 +72,11 @@ func Package(c *cli.Context) {
 	executeAlias(c, "package")
 }
 
+// Benchmark executes the "benchmark" alias
+func Benchmark(c *cli.Context) {
+	executeAlias(c, "benchmark")
+}
+
 func executeAlias(c *cli.Context, aliasName string) {
 	if !actions.IsContainerPresent(data.ContainerName()) {
 		Up(c)
