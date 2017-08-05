@@ -10,7 +10,9 @@ import (
 	"strings"
 
 	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/filters"
+	"github.com/docker/docker/client"
 )
 
 // Attach spawns a bash shell in the container with the given name
@@ -59,8 +61,39 @@ func ExecuteDockerCommand(containerName string, command ...string) {
 
 // StartBackgroundContainer brings up a container with the given imageID and volume mappings
 func StartBackgroundContainer(imageID string, name string, volumes map[string]string) {
-	dockerCommandLine("run", "-dti", volumeArgs(volumes), "--name", name, imageID)
-	fmt.Println("started background container with name:", name)
+	var binds []string
+	for host, dest := range volumes {
+		binds = append(binds, host+":"+dest)
+	}
+
+	ctx := context.Background()
+	cli, err := client.NewEnvClient()
+	if err != nil {
+		panic(err)
+	}
+
+	resp, err := cli.ContainerCreate(
+		ctx,
+		&container.Config{
+			Image:     imageID,
+			OpenStdin: true,
+			Tty:       true,
+		},
+		&container.HostConfig{
+			Binds: binds,
+		},
+		nil,
+		name,
+	)
+	if err != nil {
+		panic(err)
+	}
+
+	if err := cli.ContainerStart(ctx, resp.ID, types.ContainerStartOptions{}); err != nil {
+		panic(err)
+	}
+
+	fmt.Println("Started background container with name:", name)
 }
 
 // IsContainerPresent checks if a container with the given name is present on the system in any state (running, stopped etc...)

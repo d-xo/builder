@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"strings"
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
@@ -41,15 +40,4 @@ func dockerCommandLine(args ...string) string {
 	}
 
 	return string(stdoutStderr)
-}
-
-func volumeArgs(volumes map[string]string) string {
-	output := ""
-
-	for host, dest := range volumes {
-		volumeCommand := []string{output, "-v", host, ":", dest, " "}
-		output = strings.Join(volumeCommand, "")
-	}
-
-	return strings.TrimSpace(output)
 }
