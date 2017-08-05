@@ -1,3 +1,23 @@
 #! /usr/bin/env bash
 
-gofmt -s -w ./**/*.go && golint && go test ./**/ && go install
+echo ""
+echo "Format / Lint"
+echo "==================================================="
+gofmt -s -w ./**/*.go
+golint
+
+echo ""
+echo "Install Dependencies"
+echo "==================================================="
+go get
+
+echo ""
+echo "Unit Tests"
+echo "==================================================="
+go test ./...
+
+echo ""
+echo "Integration Tests"
+echo "==================================================="
+go install
+cucumber

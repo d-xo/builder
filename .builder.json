@@ -1,0 +1,9 @@
+{
+    "dockerfileDirectory": ".",
+    "volumes": {
+        ".":"/go/src/github.com/xwvvvvwx/builder"
+    },
+    "commands": {
+        "verify": "/go/src/github.com/xwvvvvwx/builder/verify.sh"
+    }
+}
