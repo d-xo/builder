@@ -1,7 +1,8 @@
 {
     "dockerfileDirectory": ".",
     "volumes": {
-        ".":"/go/src/github.com/xwvvvvwx/builder"
+        ".":"/go/src/github.com/xwvvvvwx/builder",
+        "/var/run/docker.sock":"/var/run/docker.sock"
     },
     "commands": {
         "verify": "/go/src/github.com/xwvvvvwx/builder/verify.sh"
