@@ -1,4 +1,5 @@
-#! /usr/bin/env bash
+#! /usr/bin/env ash
+# shellcheck shell=dash
 
 echo ""
 echo "Format / Lint"

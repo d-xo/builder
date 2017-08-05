@@ -1,20 +1,32 @@
-FROM golang:1.8
+FROM docker:stable
 
-ENV DEBIAN_FRONTEND=noninteractive
+# -------------------------------------------------------------------
 
-RUN apt-get update && apt-get install -y \
-    ruby-full \
-&& apt-get clean
+ENV GOPATH /go
+ENV PATH $PATH:$GOPATH/bin:/usr/local/go/bin
+
+# -------------------------------------------------------------------
+
+RUN apk update && apk add \
+    build-base \
+    git \
+    go \
+    libffi-dev \
+    ruby \
+    ruby-dev \
+    ruby-irb \
+    ruby-rdoc
 
 RUN gem install aruba cucumber
-
 RUN go get github.com/golang/lint/golint
+
+# -------------------------------------------------------------------
 
 VOLUME /go/src/github.com/xwvvvvwx/builder
 WORKDIR /go/src/github.com/xwvvvvwx/builder
 
-# https://stackoverflow.com/a/5395932
-RUN chmod go-w /go/
-RUN chmod go-w /go/bin
+# -------------------------------------------------------------------
 
-CMD /bin/bash
+CMD /bin/ash
+
+# -------------------------------------------------------------------
