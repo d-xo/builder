@@ -1,0 +1,14 @@
+sudo: required
+
+services:
+  - docker
+
+before_install:
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+  - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  - sudo apt-get update
+  - sudo apt-get -y install docker-ce=17.06.0~ce-0~ubuntu
+  - docker build -t builder .
+
+script:
+  - docker run -d -v $(pwd):/go/src/github.com/xwvvvvwx/builder -v /var/run/docker.sock:/var/run/docker.sock builder ./verify.sh
