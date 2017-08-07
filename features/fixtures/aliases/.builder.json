@@ -1,0 +1,11 @@
+{
+    "dockerfileDirectory": ".",
+    "commands": {
+        "build": "echo 'ran build'",
+        "verify": "echo 'ran verify'",
+        "package": "echo 'ran package'",
+        "start": "echo 'ran start'",
+        "benchmark": "echo 'ran benchmark'",
+        "custom": "echo 'ran custom'"
+    }
+}
