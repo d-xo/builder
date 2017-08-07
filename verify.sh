@@ -21,4 +21,4 @@ echo ""
 echo "Integration Tests"
 echo "==================================================="
 go install
-cucumber
+cucumber -f progress
