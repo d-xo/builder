@@ -1,5 +1,7 @@
 # builder
 
+[![Build Status](https://travis-ci.org/xwvvvvwx/builder.svg?branch=master)](https://travis-ci.org/xwvvvvwx/builder)
+
 `builder` is a tool to help manage dockerized project build environments.
 
 Define your build environment in a Dockerfile and then define custom user commands to be executed in
@@ -36,7 +38,7 @@ The following options can be set:
 }
 ```
 
-***Defaults**
+**Defaults**
 
 - `containerName`: will fallback to a hash of the dockerfile directory name
 
