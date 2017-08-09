@@ -1,0 +1,4 @@
+{
+    "dockerfileDirectory": ".",
+    "containerName": "lifecycle-integration-test"
+}
