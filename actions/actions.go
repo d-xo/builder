@@ -15,9 +15,9 @@ import (
 	"github.com/docker/docker/client"
 )
 
-// Attach spawns a bash shell in the container with the given name
+// Attach spawns a shell in the container with the given name
 func Attach(containerName string) {
-	cmd := exec.Command("docker", "exec", "-i", "-t", containerName, "/bin/bash")
+	cmd := exec.Command("docker", "exec", "-it", containerName, "/bin/sh")
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
