@@ -60,7 +60,7 @@ func ExecuteDockerCommand(containerName string, command ...string) {
 }
 
 // StartBackgroundContainer brings up a container with the given imageID and volume mappings
-func StartBackgroundContainer(imageID string, name string, volumes map[string]string) {
+func StartBackgroundContainer(imageID string, name string, volumes map[string]string, privileged bool) {
 	var binds []string
 	for host, dest := range volumes {
 		binds = append(binds, host+":"+dest)
@@ -80,7 +80,8 @@ func StartBackgroundContainer(imageID string, name string, volumes map[string]st
 			Tty:       true,
 		},
 		&container.HostConfig{
-			Binds: binds,
+			Binds:      binds,
+			Privileged: privileged,
 		},
 		nil,
 		name,

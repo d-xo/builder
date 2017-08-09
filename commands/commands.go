@@ -18,6 +18,7 @@ func Up(c *cli.Context) {
 	actions.StartBackgroundContainer(
 		imageID, data.ContainerName(),
 		data.Config().Volumes,
+		data.Config().Privileged,
 	)
 }
 
