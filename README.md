@@ -35,12 +35,14 @@ The following options can be set:
         "name2": "command",
         "name3": "command"
     }
+    "privileged": bool
 }
 ```
 
 **Defaults**
 
 - `containerName`: will fallback to a hash of the dockerfile directory name
+- `priviliged`: will default to false
 
 **Core Commands**
 

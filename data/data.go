@@ -16,6 +16,7 @@ type TConfig struct {
 	Volumes             map[string]string `json:"volumes"`
 	Alias               map[string]string `json:"commands"`
 	ContainerName       string            `json:"containerName"`
+	Privileged          bool              `json:"privileged"`
 }
 
 // Config reads the .builder.json

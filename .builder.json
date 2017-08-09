@@ -1,10 +1,10 @@
 {
     "dockerfileDirectory": ".",
     "volumes": {
-        ".":"/go/src/github.com/xwvvvvwx/builder",
-        "/var/run/docker.sock":"/var/run/docker.sock"
+        ".":"/go/src/github.com/xwvvvvwx/builder"
     },
     "commands": {
         "verify": "/go/src/github.com/xwvvvvwx/builder/verify.sh"
-    }
+    },
+    "privileged": true
 }
