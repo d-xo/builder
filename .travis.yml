@@ -11,4 +11,4 @@ before_install:
   - docker build -t builder .
 
 script:
-  - docker run --privileged -v $(pwd):/go/src/github.com/xwvvvvwx/builder ./verify.sh
+  - docker run --privileged -v $(pwd):/go/src/github.com/xwvvvvwx/builder builder ./verify.sh
