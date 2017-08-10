@@ -1,0 +1,7 @@
+{
+    "dockerfileDirectory": ".",
+    "volumes": {
+        "./vol1": "/vol1",
+        "./vol2": "/vol2"
+    }
+}
