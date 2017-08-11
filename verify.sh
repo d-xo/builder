@@ -1,6 +1,8 @@
 #! /usr/bin/env ash
 # shellcheck shell=dash
 
+set -eu
+
 echo ""
 echo "Format / Lint"
 echo "==================================================="
