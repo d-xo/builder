@@ -3,7 +3,6 @@
 package actions
 
 import (
-	"context"
 	"fmt"
 	"os"
 	"os/exec"
@@ -12,7 +11,6 @@ import (
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/container"
 	"github.com/docker/docker/api/types/filters"
-	"github.com/docker/docker/client"
 )
 
 // Attach spawns a shell in the container with the given name
@@ -59,30 +57,28 @@ func ExecuteDockerCommand(containerName string, command ...string) {
 	cmd.Run()
 }
 
-// StartBackgroundContainer brings up a container with the given imageID and volume mappings
-func StartBackgroundContainer(imageID string, name string, volumes map[string]string, privileged bool) {
+func createContainer(imageID string, name string, volumes map[string]string, privileged bool) container.ContainerCreateCreatedBody {
+	client, ctx := dockerClient()
+
 	var binds []string
 	for host, dest := range volumes {
 		binds = append(binds, host+":"+dest)
 	}
 
-	ctx := context.Background()
-	cli, err := client.NewEnvClient()
-	if err != nil {
-		panic(err)
+	containerConfig := &container.Config{
+		Image:     imageID,
+		OpenStdin: true,
+		Tty:       true,
+	}
+	hostConfig := &container.HostConfig{
+		Binds:      binds,
+		Privileged: privileged,
 	}
 
-	resp, err := cli.ContainerCreate(
+	resp, err := client.ContainerCreate(
 		ctx,
-		&container.Config{
-			Image:     imageID,
-			OpenStdin: true,
-			Tty:       true,
-		},
-		&container.HostConfig{
-			Binds:      binds,
-			Privileged: privileged,
-		},
+		containerConfig,
+		hostConfig,
 		nil,
 		name,
 	)
@@ -90,7 +86,16 @@ func StartBackgroundContainer(imageID string, name string, volumes map[string]st
 		panic(err)
 	}
 
-	if err := cli.ContainerStart(ctx, resp.ID, types.ContainerStartOptions{}); err != nil {
+	return resp
+}
+
+// StartBackgroundContainer brings up a container with the given imageID and volume mappings
+func StartBackgroundContainer(imageID string, name string, volumes map[string]string, privileged bool) {
+
+	resp := createContainer(imageID, name, volumes, privileged)
+
+	client, ctx := dockerClient()
+	if err := client.ContainerStart(ctx, resp.ID, types.ContainerStartOptions{}); err != nil {
 		panic(err)
 	}
 
@@ -99,12 +104,9 @@ func StartBackgroundContainer(imageID string, name string, volumes map[string]st
 
 // IsContainerPresent checks if a container with the given name is present on the system in any state (running, stopped etc...)
 func IsContainerPresent(candidateName string) bool {
-	allContainers, err := dockerClient().ContainerList(
-		context.Background(),
-		types.ContainerListOptions{
-			All: true,
-		},
-	)
+	client, ctx := dockerClient()
+
+	allContainers, err := client.ContainerList(ctx, types.ContainerListOptions{All: true})
 	if err != nil {
 		panic(err)
 	}
@@ -112,17 +114,20 @@ func IsContainerPresent(candidateName string) bool {
 	return containerWithNameExists(candidateName, allContainers)
 }
 
+func running() filters.Args {
+	filter := filters.NewArgs()
+	filter.Add("status", "running")
+	return filter
+}
+
 // IsContainerRunning checks if a container with the given name is running
 func IsContainerRunning(candidateName string) bool {
-	runningContainerFilters := filters.NewArgs()
-	runningContainerFilters.Add("status", "running")
 
-	runningContainers, err := dockerClient().ContainerList(
-		context.Background(),
-		types.ContainerListOptions{
-			All:     true,
-			Filters: runningContainerFilters,
-		},
+	client, ctx := dockerClient()
+
+	runningContainers, err := client.ContainerList(
+		ctx,
+		types.ContainerListOptions{All: true, Filters: running()},
 	)
 	if err != nil {
 		panic(err)
