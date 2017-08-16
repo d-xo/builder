@@ -18,7 +18,8 @@ func Up(c *cli.Context) {
 
 	imageID := buildImage(config.Config().DockerfileDirectory)
 	startBackgroundContainer(
-		imageID, config.ContainerName(),
+		imageID,
+		config.ContainerName(),
 		config.Config().Volumes,
 		config.Config().Privileged,
 	)
