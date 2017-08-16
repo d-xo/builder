@@ -26,7 +26,7 @@ func Up(c *cli.Context) {
 
 // Exec executes a single command in the build environment
 func Exec(c *cli.Context) {
-	if !isContainerPresent(config.ContainerName()) {
+	if !isContainerRunning(config.ContainerName()) {
 		Up(c)
 	}
 	command := append([]string{c.Args().First()}, c.Args().Tail()...)
