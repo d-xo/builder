@@ -28,6 +28,18 @@ func buildImage(dockerFileDirectory string) string {
 	return imageID
 }
 
+func startBackgroundContainer(imageID string, name string, volumes map[string]string, privileged bool) {
+
+	container := createContainer(imageID, name, volumes, privileged)
+
+	client, ctx := dockerClient()
+	if err := client.ContainerStart(ctx, container.ID, types.ContainerStartOptions{}); err != nil {
+		panic(err)
+	}
+
+	fmt.Println("Started background container with name:", name)
+}
+
 func executeInContainer(containerName string, command ...string) {
 	args := append([]string{"exec", "-t", containerName, "sh", "-c"}, command...)
 	cmd := exec.Command("docker", args...)
@@ -61,18 +73,6 @@ func createContainer(imageID string, name string, volumes map[string]string, pri
 	}
 
 	return resp
-}
-
-func startBackgroundContainer(imageID string, name string, volumes map[string]string, privileged bool) {
-
-	container := createContainer(imageID, name, volumes, privileged)
-
-	client, ctx := dockerClient()
-	if err := client.ContainerStart(ctx, container.ID, types.ContainerStartOptions{}); err != nil {
-		panic(err)
-	}
-
-	fmt.Println("Started background container with name:", name)
 }
 
 func isContainerPresent(candidateName string) bool {
