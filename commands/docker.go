@@ -1,6 +1,4 @@
-// Package actions provides functions that modify the surrounding transforms.
-// All state in actions should be passed in as a parameter (i.e. don't read info from the surroundings)
-package actions
+package commands
 
 import (
 	"fmt"
@@ -13,19 +11,9 @@ import (
 	"github.com/docker/docker/api/types/filters"
 )
 
-// Attach spawns a shell in the container with the given name
-func Attach(containerName string) {
-	cmd := exec.Command("docker", "exec", "-it", containerName, "/bin/sh")
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	cmd.Run()
-}
-
-// BuildImage builds Dockerfile specified in the config and returns the resulting Image ID
-// run build twice, once to build the image (with stdout), and once to get the image ID
-func BuildImage(dockerFileDirectory string) string {
-	cmd := exec.Command("docker", "build", dockerFileDirectory)
+// build twice, once to show stdout, and once to get imageID
+func buildImage(dockerFileDirectory string) string {
+	cmd := exec.Command("docker", "image", "build", dockerFileDirectory)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -40,23 +28,7 @@ func BuildImage(dockerFileDirectory string) string {
 	return imageID
 }
 
-// Destroy the container with the given name
-func Destroy(containerName string) {
-	client, ctx := dockerClient()
-
-	options := types.ContainerRemoveOptions{
-		Force: true,
-	}
-
-	if err := client.ContainerRemove(ctx, containerName, options); err != nil {
-		panic(err)
-	}
-
-	fmt.Println("Destroyed container with name:", containerName)
-}
-
-// ExecuteDockerCommand runs a single docker command in the project build environment
-func ExecuteDockerCommand(containerName string, command ...string) {
+func executeInContainer(containerName string, command ...string) {
 	args := append([]string{"exec", "-t", containerName, "sh", "-c"}, command...)
 	cmd := exec.Command("docker", args...)
 	cmd.Stdin = os.Stdin
@@ -91,21 +63,19 @@ func createContainer(imageID string, name string, volumes map[string]string, pri
 	return resp
 }
 
-// StartBackgroundContainer brings up a container with the given imageID and volume mappings
-func StartBackgroundContainer(imageID string, name string, volumes map[string]string, privileged bool) {
+func startBackgroundContainer(imageID string, name string, volumes map[string]string, privileged bool) {
 
-	resp := createContainer(imageID, name, volumes, privileged)
+	container := createContainer(imageID, name, volumes, privileged)
 
 	client, ctx := dockerClient()
-	if err := client.ContainerStart(ctx, resp.ID, types.ContainerStartOptions{}); err != nil {
+	if err := client.ContainerStart(ctx, container.ID, types.ContainerStartOptions{}); err != nil {
 		panic(err)
 	}
 
 	fmt.Println("Started background container with name:", name)
 }
 
-// IsContainerPresent checks if a container with the given name is present on the system in any state (running, stopped etc...)
-func IsContainerPresent(candidateName string) bool {
+func isContainerPresent(candidateName string) bool {
 	client, ctx := dockerClient()
 
 	allContainers, err := client.ContainerList(ctx, types.ContainerListOptions{All: true})
@@ -122,9 +92,7 @@ func running() filters.Args {
 	return filter
 }
 
-// IsContainerRunning checks if a container with the given name is running
-func IsContainerRunning(candidateName string) bool {
-
+func isContainerRunning(candidateName string) bool {
 	client, ctx := dockerClient()
 
 	runningContainers, err := client.ContainerList(
@@ -136,4 +104,15 @@ func IsContainerRunning(candidateName string) bool {
 	}
 
 	return containerWithNameExists(candidateName, runningContainers)
+}
+
+func containerWithNameExists(containerName string, containers []types.Container) bool {
+	for _, container := range containers {
+		for _, name := range container.Names {
+			if name == "/"+containerName {
+				return true
+			}
+		}
+	}
+	return false
 }

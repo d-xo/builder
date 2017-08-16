@@ -1,34 +1,36 @@
-// Package commands implements the UI.
-// Pass state into actions to modify the surroundings
 package commands
 
 import (
+	"fmt"
+	"os"
+	"os/exec"
+
+	"github.com/docker/docker/api/types"
 	"github.com/urfave/cli"
-	"github.com/xwvvvvwx/builder/actions"
-	"github.com/xwvvvvwx/builder/data"
+	"github.com/xwvvvvwx/builder/config"
 )
 
 // Up starts a background container from the Dockerfile specified in the config
 func Up(c *cli.Context) {
-	if actions.IsContainerPresent(data.ContainerName()) {
+	if isContainerPresent(config.ContainerName()) {
 		Destroy(c)
 	}
 
-	imageID := actions.BuildImage(data.Config().DockerfileDirectory)
-	actions.StartBackgroundContainer(
-		imageID, data.ContainerName(),
-		data.Config().Volumes,
-		data.Config().Privileged,
+	imageID := buildImage(config.Config().DockerfileDirectory)
+	startBackgroundContainer(
+		imageID, config.ContainerName(),
+		config.Config().Volumes,
+		config.Config().Privileged,
 	)
 }
 
 // Exec executes a single command in the build environment
 func Exec(c *cli.Context) {
-	if !actions.IsContainerPresent(data.ContainerName()) {
+	if !isContainerPresent(config.ContainerName()) {
 		Up(c)
 	}
 	command := append([]string{c.Args().First()}, c.Args().Tail()...)
-	actions.ExecuteDockerCommand(data.ContainerName(), command...)
+	executeInContainer(config.ContainerName(), command...)
 }
 
 // Run executes the specified alias
@@ -39,12 +41,26 @@ func Run(c *cli.Context) {
 
 // Attach spawns a bash shell in the build environment
 func Attach(c *cli.Context) {
-	actions.Attach(data.ContainerName())
+	cmd := exec.Command("docker", "exec", "-it", config.ContainerName(), "/bin/sh")
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	cmd.Run()
 }
 
 // Destroy destroys the build environment
 func Destroy(c *cli.Context) {
-	actions.Destroy(data.ContainerName())
+	client, ctx := dockerClient()
+
+	options := types.ContainerRemoveOptions{
+		Force: true,
+	}
+
+	if err := client.ContainerRemove(ctx, config.ContainerName(), options); err != nil {
+		panic(err)
+	}
+
+	fmt.Println("Destroyed container with name:", config.ContainerName())
 }
 
 // Clean resets the build environment to the state specified in the Dockerfile
@@ -79,8 +95,8 @@ func Benchmark(c *cli.Context) {
 }
 
 func executeAlias(c *cli.Context, aliasName string) {
-	if !actions.IsContainerRunning(data.ContainerName()) {
+	if !isContainerRunning(config.ContainerName()) {
 		Up(c)
 	}
-	actions.ExecuteDockerCommand(data.ContainerName(), data.CommandFromAlias(aliasName))
+	executeInContainer(config.ContainerName(), config.CommandFromAlias(aliasName))
 }

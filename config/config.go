@@ -1,6 +1,6 @@
-// Package data provides functions that gather information from the surroundings
+// Package config provides functions that gather information from the surroundings
 // functions in data should not modify the surroundings in any way
-package data
+package config
 
 import (
 	"crypto/sha1"
