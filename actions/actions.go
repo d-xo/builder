@@ -74,13 +74,7 @@ func createContainer(imageID string, name string, volumes map[string]string, pri
 		Privileged: privileged,
 	}
 
-	resp, err := client.ContainerCreate(
-		ctx,
-		containerConfig,
-		hostConfig,
-		nil,
-		name,
-	)
+	resp, err := client.ContainerCreate(ctx, containerConfig, hostConfig, nil, name)
 	if err != nil {
 		panic(err)
 	}
