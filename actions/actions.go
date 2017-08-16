@@ -42,7 +42,16 @@ func BuildImage(dockerFileDirectory string) string {
 
 // Destroy the container with the given name
 func Destroy(containerName string) {
-	dockerCommandLine("rm", "--force", containerName)
+	client, ctx := dockerClient()
+
+	options := types.ContainerRemoveOptions{
+		Force: true,
+	}
+
+	if err := client.ContainerRemove(ctx, containerName, options); err != nil {
+		panic(err)
+	}
+
 	fmt.Println("Destroyed container with name:", containerName)
 }
 
